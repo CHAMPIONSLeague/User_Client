@@ -1,6 +1,5 @@
 import org.json.simple.JSONObject;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class main {
@@ -8,10 +7,9 @@ public class main {
         Funzioni funzione = new Funzioni();
         BufferedReader tastiera = new BufferedReader(new InputStreamReader(System.in));
         JSONObject json_send = new JSONObject(); //json utilizzato per inviare dati all'api interessata
-        String risp = "";
-        String msg = "";
 
-        int scelta = 100;
+        int scelta = -1;
+        int m_user = -1;
         while(scelta != 0){
             try{
                 System.out.println("1. Login");
@@ -27,63 +25,22 @@ public class main {
                         System.out.println("Client in chiusura...");
                         break;
                     case 1: //LOGIN
-                        try{
-                            System.out.println("Inserire l'username:");
-                            msg = tastiera.readLine();
-                            json_send.put("username", msg);
+                        if (funzione.login().equals("logged")){
 
-                            System.out.println("Inserire password:");
-                            msg = tastiera.readLine();
-                            json_send.put("password", msg);
-
-                            //fa il login richiamando il metodo postRequest
-                            risp = funzione.login(json_send);
-                            //System.out.println(risp);
-
-                            //se non trova l'account lo fa registrare
-                            if(risp.equals("N")){
-                                System.out.println("Account inesistente, procedere alla registrazione...");
-                                System.out.println("Username e password inseriti in precedenza non saranno da reinserire");
-
-                                System.out.println("Inserire l'email: ");
-                                msg = tastiera.readLine();
-                                json_send.put("email", msg);
-
-                                risp = funzione.registrazione(json_send);
-                                if (risp.equals("N")){
-                                    System.out.println("Utente non registrato!");
-                                }else{
-                                    System.out.println("Registrazione completata!");
-                                }
-                            }else{
-                                System.out.println("Benvenuto!");
+                            //menu utente
+                            while (m_user != 0){
+                                System.out.println("1. Prenota");
+                                System.out.println("2. ");
                             }
-                        }catch (Exception e){
-                            e.printStackTrace();
+                        }else{
+                            System.out.println();
                         }
                         break;
                     case 2: //REGISTRAZIONE
-                        try {
-                            System.out.println("Inserire l'email:");
-                            msg = tastiera.readLine();
-                            json_send.put("email",msg);
-
-                            System.out.println("Inserire l'username:");
-                            msg = tastiera.readLine();
-                            json_send.put("username", msg);
-
-                            System.out.println("Inserire password:");
-                            msg = tastiera.readLine();
-                            json_send.put("password", msg);
-
-                            //fa la registrazione richiamando la funzione
-                            funzione.registrazione(json_send);
-
-                        }catch (IOException e){
-                            e.printStackTrace();
-                        }
+                        funzione.registrazione();
                         break;
-                    case 3:
+                    default:
+                        System.out.println("Comando non valido");
                         break;
                 }
             }catch (Exception e){

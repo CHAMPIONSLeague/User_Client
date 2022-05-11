@@ -12,20 +12,62 @@ import java.net.URL;
 public class Funzioni {
     public BufferedReader tastiera = new BufferedReader(new InputStreamReader(System.in));
     public JSONObject json = new JSONObject();
+    private String ris = "";
 
-    public String login(JSONObject json){
-        return postRequest("http://localhost/Server_Cinema/src/login.php", json.toJSONString());
+    public String login(){
+        try{
+            System.out.println("Inserire l'username:");
+            String msg = tastiera.readLine();
+            json.put("username", msg);
+
+            System.out.println("Inserire password:");
+            msg = tastiera.readLine();
+            json.put("password", msg);
+
+            //post request mi da {ris: "N"} che receiveParser mi returna come "N"
+            ris = reciveParser(postRequest("http://localhost/Server_Cinema/src/login.php", json.toJSONString()));
+            if (ris.equals("N")){
+                System.out.println("Account inesistente, procedere alla registrazione...");
+                registrazione();
+            }else if(ris.equals("Y")){
+                System.out.println("Benvenuto "+json.get("username"));
+                return "logged";
+            }
+        }catch(Exception e){
+            System.out.println("Formato credenziali non valido");
+        }
+        return "not logged";
     }
 
-    public String registrazione(JSONObject json){
-        return postRequest("http://localhost/Server_Cinema/src/registrazione.php", json.toJSONString());
+    public void registrazione(){
+        try{
+            System.out.println("Inserire l'username:");
+            String msg = tastiera.readLine();
+            json.put("username", msg);
+
+            System.out.println("Inserire password:");
+            msg = tastiera.readLine();
+            json.put("password", msg);
+
+            System.out.println("Inserire l'email: ");
+            msg = tastiera.readLine();
+            json.put("email", msg);
+
+            //post request mi da {ris: "N"} che receiveParser mi returna come "N"
+            ris = reciveParser(postRequest("http://localhost/Server_Cinema/src/registrazione.php", json.toJSONString()));
+            if (ris.equals("N")){
+                System.out.println("Utente non registrato!");
+            }else if (ris.equals("Y")){
+                System.out.println("Registrazione completata!");
+            }
+        }catch(Exception e){
+            System.out.println("Formato credenziali errato");
+            e.printStackTrace();
+        }
     }
 
     public static String postRequest(String indirizzo, String messaggio){
         String response = "";
-        String ris = ""; //stringa che riceve i dati inviati dall'api
-        JSONObject json_receive = new JSONObject(); //json utilizzato per ricevere dati specifici
-        JSONParser p = new JSONParser();
 
         if(messaggio != null){
             //messaggio pieno
@@ -42,10 +84,10 @@ public class Funzioni {
                 output.close();
                 int rCode = con.getResponseCode();
                 if(rCode == 200){
-                    DataInputStream input = new DataInputStream(con.getInputStream());
+                    DataInputStream input = new DataInputStream(con.getInputStream()); //dati server
                     String in = "";
                     while((in = input.readLine()) != null){
-                        response = in;
+                        response = in; //risposta server
                     }
                     input.close();
                 }else{
@@ -60,13 +102,21 @@ public class Funzioni {
             //TODO: spiegare meglio cosa si intende per messaggio vuoto
         }
 
+        return response; //restituisce il dato richiesto
+    }
+
+    public String reciveParser(String s_response){
+        JSONObject json_receive; //json utilizzato per ricevere dati specifici
+        JSONParser p = new JSONParser();
+        String ris = "";
+        
         try {
-            json_receive = (JSONObject) p.parse(response);
+            json_receive = (JSONObject) p.parse(s_response);
             ris = (String) json_receive.get("ris");
         }catch (ParseException e) {
             System.out.println("Errore di conversione");
         }
-
-        return ris; //restituisce il dato richiesto
+        return ris;
     }
+
 }
