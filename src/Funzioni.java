@@ -12,6 +12,7 @@ import java.net.URL;
 public class Funzioni {
     public BufferedReader tastiera = new BufferedReader(new InputStreamReader(System.in));
     public JSONObject json = new JSONObject();
+    JSONParser p = new JSONParser();
     private String ris = "";
 
     public String login(){
@@ -25,13 +26,16 @@ public class Funzioni {
             json.put("password", msg);
 
             //post request mi da {ris: "N"} che receiveParser mi returna come "N"
-            ris = reciveParser(postRequest("http://localhost/Server_Cinema/src/login.php", json.toJSONString()));
+            ris = reciveParser(postRequest("http://192.168.67.156/funzioni_cinema/src/login.php", json.toJSONString()));
             if (ris.equals("N")){
                 System.out.println("Account inesistente, procedere alla registrazione...");
                 registrazione();
-            }else if(ris.equals("Y")){
+            }else if(ris.equals("YU")){
                 System.out.println("Benvenuto "+json.get("username"));
                 return "logged";
+            }else if (ris.equals("YA")){
+                System.out.println("Ciao "+json.get("username") + ", usa il client dedicato agli admin!");
+                return "admin logged";
             }
         }catch(Exception e){
             System.out.println("Formato credenziali non valido");
@@ -54,7 +58,7 @@ public class Funzioni {
             json.put("email", msg);
 
             //post request mi da {ris: "N"} che receiveParser mi returna come "N"
-            ris = reciveParser(postRequest("http://localhost/Server_Cinema/src/registrazione.php", json.toJSONString()));
+            ris = reciveParser(postRequest("http://192.168.67.156/funzioni_cinema/src/registrazione.php", json.toJSONString()));
             if (ris.equals("N")){
                 System.out.println("Utente non registrato!");
             }else if (ris.equals("Y")){
@@ -64,6 +68,36 @@ public class Funzioni {
             System.out.println("Formato credenziali errato");
             e.printStackTrace();
         }
+    }
+
+    public void stmpPalinsesto(){
+        JSONObject json_receive; //json utilizzato per ricevere dati specifici
+        String response = postRequest("http://192.168.67.156/funzioni_cinema/src/stampaPalinsesto.php", "");
+
+        int spezzaRiga = 0;
+        char[] testo = response.toCharArray();
+
+        for (int i = 0; i< testo.length; i++){
+            if (testo[i] == '{'){
+                testo[i] = '|';
+                if (spezzaRiga == 1){
+                    testo[i] = '\n';
+                    testo[i+1] = '|';
+                    spezzaRiga = 0;
+                }
+            }
+            if (testo[i] == '}'){
+                spezzaRiga = 1;
+                testo[i] = '|';
+            }
+            if (testo[i] == '"'){
+                testo[i] = ' ';
+            }
+            if (testo[i] == ','){
+                testo[i] = ' ';
+            }
+        }
+        System.out.println(testo);
     }
 
     public static String postRequest(String indirizzo, String messaggio){
@@ -107,9 +141,8 @@ public class Funzioni {
 
     public String reciveParser(String s_response){
         JSONObject json_receive; //json utilizzato per ricevere dati specifici
-        JSONParser p = new JSONParser();
         String ris = "";
-        
+
         try {
             json_receive = (JSONObject) p.parse(s_response);
             ris = (String) json_receive.get("ris");

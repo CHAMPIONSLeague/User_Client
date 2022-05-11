@@ -25,15 +25,26 @@ public class main {
                         System.out.println("Client in chiusura...");
                         break;
                     case 1: //LOGIN
-                        if (funzione.login().equals("logged")){
+                        String risp = funzione.login();
+                        if (risp.equals("logged")){
 
-                            //menu utente
+                            //TODO: Menu utente
                             while (m_user != 0){
-                                System.out.println("1. Prenota");
+
+                                System.out.println("1. Stampa Palinsesto");
                                 System.out.println("2. ");
+                                System.out.println("0. Exit");
+
+                                m_user = Integer.parseInt(tastiera.readLine());
+
+                                switch (m_user){
+                                    case 1:
+                                        funzione.stmpPalinsesto();
+                                        break;
+                                }
                             }
-                        }else{
-                            System.out.println();
+                        }else if(risp.equals("admin logged")){
+                            return;
                         }
                         break;
                     case 2: //REGISTRAZIONE
