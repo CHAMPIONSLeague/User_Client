@@ -43,7 +43,7 @@ public class main {
                                         funzione.stmpPalinsesto();
                                         break;
                                     case 2:
-                                        //nuova prenotazione
+                                        funzione.prenotazione();
                                         break;
                                     case 3:
                                         funzione.annullamentoPrenotazione();
