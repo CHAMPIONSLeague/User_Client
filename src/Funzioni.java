@@ -77,6 +77,7 @@ public class Funzioni {
         try{
             System.out.println("Inserire il nome del film desiderato");
             msg = tastiera.readLine();
+            json.put("nome_film", msg);
             ris = reciveParser(postRequest("http://localhost/Server_Cinema/src/prenotazione.php", json.toJSONString()));
             if(ris.equals("Y")){
                 System.out.println("Prenotazione aggiunta");
