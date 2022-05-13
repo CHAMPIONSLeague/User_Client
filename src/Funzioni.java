@@ -2,10 +2,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -14,11 +11,12 @@ public class Funzioni {
     public JSONObject json = new JSONObject();
     JSONParser p = new JSONParser();
     private String ris = "";
+    private String msg = "";
 
     public String login(){
         try{
             System.out.println("Inserire l'username:");
-            String msg = tastiera.readLine();
+            msg = tastiera.readLine();
             json.put("username", msg);
 
             System.out.println("Inserire password:");
@@ -26,16 +24,20 @@ public class Funzioni {
             json.put("password", msg);
 
             //post request mi da {ris: "N"} che receiveParser mi returna come "N"
-            ris = reciveParser(postRequest("http://192.168.67.156/funzioni_cinema/src/login.php", json.toJSONString()));
-            if (ris.equals("N")){
-                System.out.println("Account inesistente, procedere alla registrazione...");
-                registrazione();
-            }else if(ris.equals("YU")){
-                System.out.println("Benvenuto "+json.get("username"));
-                return "logged";
-            }else if (ris.equals("YA")){
-                System.out.println("Ciao "+json.get("username") + ", usa il client dedicato agli admin!");
-                return "admin logged";
+            ris = reciveParser(postRequest("http://localhost/Server_Cinema/src/login.php", json.toJSONString()));
+            switch (ris) {
+                case "N" -> {
+                    System.out.println("Account inesistente, procedere alla registrazione...");
+                    registrazione();
+                }
+                case "YU" -> {
+                    System.out.println("Benvenuto " + json.get("username"));
+                    return "logged";
+                }
+                case "YA" -> {
+                    System.out.println("Ciao " + json.get("username") + ", usa il client dedicato agli admin!");
+                    return "admin logged";
+                }
             }
         }catch(Exception e){
             System.out.println("Formato credenziali non valido");
@@ -100,6 +102,39 @@ public class Funzioni {
         System.out.println(testo);
     }
 
+    public void annullamentoPrenotazione(){
+        JSONObject json_receive;
+        String ris2 = postRequest("http://localhost/Server_Cinema/src/eliminazionePrenotazione.php", json.toJSONString());
+        ris = reciveParser(ris2);
+
+        if(ris.equals("N")){
+            System.out.println("Non ci sono prenotazioni");
+        }else{
+            //Stampa nomi dei film
+            try {
+                json_receive = (JSONObject) p.parse(ris2);
+                ris = (String) json_receive.get("nome_film");
+                int num_prenot = (int) json_receive.get("num_prenotazioni");
+
+                //rimpiazza tutte le virgole tra i nomi dei film mettendo \n per metterle una sotto l'altra
+                for (int i =0; i<num_prenot; i++){
+                    System.out.println(i + ". " + ris.replace(",","\n"));
+                }
+                System.out.println("Inserire il numero del film che NON si vuole vedere: ");
+                int scelta = tastiera.read();
+                json.put("delete_film", scelta);
+                ris = reciveParser(postRequest("http://localhost/Server_Cinema/src/eliminazionePrenotazione.php", json.toJSONString()));
+                if (ris.equals("Y")){
+                    System.out.println("La prenotazione è stata cancellata dai nostri sistemi!");
+                }else {
+                    System.out.println("Errore nell'eliminazione della prenotazione");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public static String postRequest(String indirizzo, String messaggio){
         String response = "";
 
@@ -141,7 +176,6 @@ public class Funzioni {
 
     public String reciveParser(String s_response){
         JSONObject json_receive; //json utilizzato per ricevere dati specifici
-        String ris = "";
 
         try {
             json_receive = (JSONObject) p.parse(s_response);
