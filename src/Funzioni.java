@@ -28,14 +28,17 @@ public class Funzioni {
             switch (ris) {
                 case "N" -> {
                     System.out.println("Account inesistente, procedere alla registrazione...");
+                    json.clear();
                     registrazione();
                 }
                 case "YU" -> {
                     System.out.println("Benvenuto " + json.get("username"));
+                    json.clear();
                     return "logged";
                 }
                 case "YA" -> {
                     System.out.println("Ciao " + json.get("username") + ", usa il client dedicato agli admin!");
+                    json.clear();
                     return "admin logged";
                 }
             }
@@ -70,6 +73,7 @@ public class Funzioni {
             System.out.println("Formato credenziali errato");
             e.printStackTrace();
         }
+        json.clear();
     }
 
     public void prenotazione(){
@@ -89,6 +93,7 @@ public class Funzioni {
         }catch (IOException e){
             System.out.println("Lo spettacolo scelto non esiste");
         }
+        json.clear();
     }
 
     public void changeUser(){
@@ -99,12 +104,12 @@ public class Funzioni {
             json.put("password", msg);
             json.put("cmd", "checkPass");
 
-            ris = reciveParser(postRequest("http://localhost/Server_Cinema/src/changeUsername.php",json.toJSONString()));
+            ris = reciveParser(postRequest("http://localhost/Server_Cinema/src/change_username.php",json.toJSONString()));
             if (ris.equals("Y")){
                 System.out.println("Inserire il nuovo Username");
                 msg = tastiera.readLine();
 
-                ris = reciveParser(postRequest("http://localhost/Server_Cinema/src/changeUsername.php",json.toJSONString()));
+                ris = reciveParser(postRequest("http://localhost/Server_Cinema/src/change_username.php",json.toJSONString()));
                 if (ris.equals("Y")){
                     System.out.println("Username aggiornato");
                 }else{
@@ -116,12 +121,14 @@ public class Funzioni {
         }catch (Exception e){
             System.out.println("Errore nel cambio di username");
         }
+        json.clear();
     }
 
     public void stmpPalinsesto(){
         String response = postRequest("http://localhost/Server_Cinema/src/stampaPalinsesto.php", "");
         response = response.replace("{","").replace("/", "").replace('}','\n').replace('"',' ').replace(","," ");
         System.out.println(response);
+        json.clear();
     }
 
     public void annullamentoPrenotazione(){
@@ -131,7 +138,7 @@ public class Funzioni {
 
         if(ris.equals("N")){
             System.out.println("Non ci sono prenotazioni");
-        }else{
+        }else if (ris.equals("Y")){
             //Stampa nomi dei film
             try {
                 json_receive = (JSONObject) p.parse(ris2);
@@ -154,7 +161,10 @@ public class Funzioni {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }else{
+            System.out.println("Non ci sono prenotazioni");
         }
+        json.clear();
     }
 
     public static String postRequest(String indirizzo, String messaggio){
@@ -196,7 +206,6 @@ public class Funzioni {
 
     public String reciveParser(String s_response){
         JSONObject json_receive; //json utilizzato per ricevere dati specifici
-
         try {
             json_receive = (JSONObject) p.parse(s_response);
             ris = (String) json_receive.get("ris");
@@ -205,5 +214,4 @@ public class Funzioni {
         }
         return ris;
     }
-
 }

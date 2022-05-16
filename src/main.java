@@ -34,20 +34,23 @@ public class main {
                                 System.out.println("1. Stampa Palinsesto");
                                 System.out.println("2. Nuova prenotazione");
                                 System.out.println("3. Cancella prenotazione");
+                                System.out.println("4. Cambio username");
                                 System.out.println("0. Exit");
 
                                 m_user = Integer.parseInt(tastiera.readLine());
-
                                 switch (m_user){
                                     case 1:
                                         funzione.stmpPalinsesto();
                                         break;
                                     case 2:
+                                        //nuova prenotazione
                                         funzione.prenotazione();
                                         break;
                                     case 3:
                                         funzione.annullamentoPrenotazione();
                                         break;
+                                    case 4:
+                                        funzione.changeUser();
                                     default:
                                         System.out.println("Comando non valido");
                                         break;
