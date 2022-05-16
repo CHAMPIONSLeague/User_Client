@@ -28,17 +28,14 @@ public class Funzioni {
             switch (ris) {
                 case "N" -> {
                     System.out.println("Account inesistente, procedere alla registrazione...");
-                    json.clear();
                     registrazione();
                 }
                 case "YU" -> {
                     System.out.println("Benvenuto " + json.get("username"));
-                    json.clear();
                     return "logged";
                 }
                 case "YA" -> {
                     System.out.println("Ciao " + json.get("username") + ", usa il client dedicato agli admin!");
-                    json.clear();
                     return "admin logged";
                 }
             }
@@ -73,16 +70,16 @@ public class Funzioni {
             System.out.println("Formato credenziali errato");
             e.printStackTrace();
         }
-        json.clear();
     }
 
     public void prenotazione(){
         stmpPalinsesto();
         try{
-            System.out.println("Inserire il nome del film desiderato");
+            System.out.println("Inserire il codice dello spettacolo:");
             msg = tastiera.readLine();
-            json.put("nome_film", msg);
+            json.put("cod_sp", msg);
             ris = reciveParser(postRequest("http://localhost/Server_Cinema/src/prenotazione.php", json.toJSONString()));
+
             if(ris.equals("Y")){
                 System.out.println("Prenotazione aggiunta");
             }else if (ris.equals("N")){
@@ -93,7 +90,6 @@ public class Funzioni {
         }catch (IOException e){
             System.out.println("Lo spettacolo scelto non esiste");
         }
-        json.clear();
     }
 
     public void changeUser(){
@@ -121,14 +117,12 @@ public class Funzioni {
         }catch (Exception e){
             System.out.println("Errore nel cambio di username");
         }
-        json.clear();
     }
 
     public void stmpPalinsesto(){
         String response = postRequest("http://localhost/Server_Cinema/src/stampaPalinsesto.php", "");
         response = response.replace("{","").replace("/", "").replace('}','\n').replace('"',' ').replace(","," ");
         System.out.println(response);
-        json.clear();
     }
 
     public void annullamentoPrenotazione(){
@@ -164,7 +158,6 @@ public class Funzioni {
         }else{
             System.out.println("Non ci sono prenotazioni");
         }
-        json.clear();
     }
 
     public static String postRequest(String indirizzo, String messaggio){
