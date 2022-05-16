@@ -7,6 +7,7 @@ public class main {
         Funzioni funzione = new Funzioni();
         BufferedReader tastiera = new BufferedReader(new InputStreamReader(System.in));
         JSONObject json_send = new JSONObject(); //json utilizzato per inviare dati all'api interessata
+        String risp = "";
 
         int scelta = -1;
         int m_user = -1;
@@ -17,19 +18,14 @@ public class main {
                 System.out.println("0. Exit");
                 scelta = Integer.parseInt(tastiera.readLine());
 
-                //le funzioni mandano i dati al server, ma sanno gia' dove devono andare
-                //le post request avranno link specifici in base alla destinazione dei dati
-                //es. mando user e pass, nel post request le mando al login DAL CLIENT
-                switch (scelta){
-                    case 0: //Chiusura
-                        System.out.println("Client in chiusura...");
-                        break;
-                    case 1: //LOGIN
-                        String risp = funzione.login();
-                        if (risp.equals("logged")){
+                switch (scelta) {
+                    case 0 -> System.out.println("Client in chiusura...");
+                    case 1 -> {
+                        risp = funzione.login();
+                        if (risp.equals("logged")) {
 
                             //TODO: Menu utente
-                            while (m_user != 0){
+                            while (m_user != 0) {
 
                                 System.out.println("1. Stampa Palinsesto");
                                 System.out.println("2. Nuova prenotazione");
@@ -38,34 +34,22 @@ public class main {
                                 System.out.println("0. Exit");
 
                                 m_user = Integer.parseInt(tastiera.readLine());
-                                switch (m_user){
-                                    case 1:
-                                        funzione.stmpPalinsesto();
-                                        break;
-                                    case 2:
-                                        //nuova prenotazione
-                                        funzione.prenotazione();
-                                        break;
-                                    case 3:
-                                        funzione.annullamentoPrenotazione();
-                                        break;
-                                    case 4:
-                                        funzione.changeUser();
-                                    default:
-                                        System.out.println("Comando non valido");
-                                        break;
+                                switch (m_user) {
+                                    case 1 -> funzione.stmpPalinsesto();
+                                    case 2 -> funzione.prenotazione();
+                                    case 3 -> funzione.annullamentoPrenotazione();
+                                    case 4 -> funzione.changeUser();
+                                    case 5 -> funzione.changeEmail();
+                                    default -> System.out.println("Comando non valido");
                                 }
                             }
-                        }else if(risp.equals("admin logged")){
+                        } else if (risp.equals("admin logged")) {
                             return;
                         }
-                        break;
-                    case 2: //REGISTRAZIONE
-                        funzione.registrazione();
-                        break;
-                    default:
-                        System.out.println("Comando non valido");
-                        break;
+                    }
+                    case 2 -> //REGISTRAZIONE
+                            funzione.registrazione();
+                    default -> System.out.println("Comando non valido");
                 }
             }catch (Exception e){
                 e.printStackTrace();

@@ -12,6 +12,7 @@ public class Funzioni {
     JSONParser p = new JSONParser();
     private String ris = "";
     private String msg = "";
+    private final String address = "http://localhost/Server_Cinema/src/user/";
 
     public String login(){
         try{
@@ -60,7 +61,7 @@ public class Funzioni {
             json.put("email", msg);
 
             //post request mi da {ris: "N"} che receiveParser mi returna come "N"
-            ris = reciveParser(postRequest("http://locahost/Server_Cinema/src/registrazione.php", json.toJSONString()));
+            ris = reciveParser(postRequest("http://localhost/Server_Cinema/src/registrazione.php", json.toJSONString()));
             if (ris.equals("N")){
                 System.out.println("Utente non registrato!");
             }else if (ris.equals("Y")){
@@ -78,7 +79,7 @@ public class Funzioni {
             System.out.println("Inserire il codice dello spettacolo:");
             msg = tastiera.readLine();
             json.put("cod_sp", msg);
-            ris = reciveParser(postRequest("http://localhost/Server_Cinema/src/prenotazione.php", json.toJSONString()));
+            ris = reciveParser(postRequest(address+"prenotazione.php", json.toJSONString()));
 
             if(ris.equals("Y")){
                 System.out.println("Prenotazione aggiunta");
@@ -92,6 +93,7 @@ public class Funzioni {
         }
     }
 
+    //TODO: da testare
     public void changeUser(){
         try {
             System.out.println("Inserire a password dell'account");
@@ -100,12 +102,12 @@ public class Funzioni {
             json.put("password", msg);
             json.put("cmd", "checkPass");
 
-            ris = reciveParser(postRequest("http://localhost/Server_Cinema/src/change_username.php",json.toJSONString()));
+            ris = reciveParser(postRequest(address+"change_username.php",json.toJSONString()));
             if (ris.equals("Y")){
                 System.out.println("Inserire il nuovo Username");
                 msg = tastiera.readLine();
 
-                ris = reciveParser(postRequest("http://localhost/Server_Cinema/src/change_username.php",json.toJSONString()));
+                ris = reciveParser(postRequest(address+"change_username.php",json.toJSONString()));
                 if (ris.equals("Y")){
                     System.out.println("Username aggiornato");
                 }else{
@@ -119,16 +121,17 @@ public class Funzioni {
         }
     }
 
+    //TODO: da testare
     public void changeEmail(){
         try{
             System.out.println("Inserire la password");
             msg = tastiera.readLine();
             json.put("password", msg);
 
-            ris = reciveParser(postRequest("http://localhost/Server_Cinema/src/change_email.php", json.toJSONString()));
+            ris = reciveParser(postRequest(address+"change_email.php", json.toJSONString()));
             if (ris.equals("Y")){ //credenziali corrette
                 json.put("cmd", "ch_email");
-                ris = reciveParser(postRequest("http://localhost/Server_Cinema/src/change_email.php", json.toJSONString()));
+                ris = reciveParser(postRequest(address+"change_email.php", json.toJSONString()));
                 if (ris.equals("Y")){
                     System.out.println("Email aggiornata con successo");
                 }else{
@@ -144,15 +147,15 @@ public class Funzioni {
     }
 
     public void stmpPalinsesto(){
-        String response = postRequest("http://localhost/Server_Cinema/src/stampaPalinsesto.php", "");
+        String response = postRequest(address+"stampaPalinsesto.php", "");
         response = response.replace("{","").replace("/", "").replace('}','\n').replace('"',' ').replace(","," ");
         System.out.println(response);
     }
 
-    //TODO: Finire i lato server
+    //TODO: Finire il lato server
     public void annullamentoPrenotazione(){
         JSONObject json_receive;
-        String ris2 = postRequest("http://localhost/Server_Cinema/src/eliminazionePrenotazione.php", json.toJSONString());
+        String ris2 = postRequest(address+"eliminazionePrenotazione.php", json.toJSONString());
         ris = reciveParser(ris2);
 
         if(ris.equals("N")){
@@ -171,7 +174,7 @@ public class Funzioni {
                 System.out.println("Inserire il numero del film che NON si vuole vedere: ");
                 int scelta = tastiera.read();
                 json.put("delete_film", scelta);
-                ris = reciveParser(postRequest("http://localhost/Server_Cinema/src/eliminazionePrenotazione.php", json.toJSONString()));
+                ris = reciveParser(postRequest(address+"eliminazionePrenotazione.php", json.toJSONString()));
                 if (ris.equals("Y")){
                     System.out.println("La prenotazione è stata cancellata dai nostri sistemi!");
                 }else {
