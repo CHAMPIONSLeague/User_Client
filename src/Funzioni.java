@@ -119,12 +119,37 @@ public class Funzioni {
         }
     }
 
+    public void changeEmail(){
+        try{
+            System.out.println("Inserire la password");
+            msg = tastiera.readLine();
+            json.put("password", msg);
+
+            ris = reciveParser(postRequest("http://localhost/Server_Cinema/src/change_email.php", json.toJSONString()));
+            if (ris.equals("Y")){ //credenziali corrette
+                json.put("cmd", "ch_email");
+                ris = reciveParser(postRequest("http://localhost/Server_Cinema/src/change_email.php", json.toJSONString()));
+                if (ris.equals("Y")){
+                    System.out.println("Email aggiornata con successo");
+                }else{
+                    System.out.println(ris); //email di qualcun'altro
+                }
+            }else {
+                System.out.println(ris); //ris = N
+            }
+        }catch (Exception e){
+            System.out.println(ris);
+        }
+
+    }
+
     public void stmpPalinsesto(){
         String response = postRequest("http://localhost/Server_Cinema/src/stampaPalinsesto.php", "");
         response = response.replace("{","").replace("/", "").replace('}','\n').replace('"',' ').replace(","," ");
         System.out.println(response);
     }
 
+    //TODO: Finire i lato server
     public void annullamentoPrenotazione(){
         JSONObject json_receive;
         String ris2 = postRequest("http://localhost/Server_Cinema/src/eliminazionePrenotazione.php", json.toJSONString());
