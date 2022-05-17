@@ -31,10 +31,12 @@ public class main {
                                 System.out.println("2. Nuova prenotazione");
                                 System.out.println("3. Cancella prenotazione");
                                 System.out.println("4. Cambio username");
+                                System.out.println("5. Cambio email");
                                 System.out.println("0. Exit");
 
                                 m_user = Integer.parseInt(tastiera.readLine());
                                 switch (m_user) {
+                                    case 0 -> System.out.println("LOGOUT");
                                     case 1 -> funzione.stmpPalinsesto();
                                     case 2 -> funzione.prenotazione();
                                     case 3 -> funzione.annullamentoPrenotazione();

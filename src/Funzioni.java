@@ -138,18 +138,30 @@ public class Funzioni {
             System.out.println("Inserire la password");
             msg = tastiera.readLine();
             json.put("password", msg);
+            json.put("cmd", "checkPass");
 
             ris = reciveParser(postRequest(address+"change_email.php", json.toJSONString()));
+
             if (ris.equals("Y")){ //credenziali corrette
                 json.put("cmd", "ch_email");
+
+                System.out.println("Inserire la nuova email");
+                msg = tastiera.readLine();
+                json.put("new_email", msg);
+
                 ris = reciveParser(postRequest(address+"change_email.php", json.toJSONString()));
                 if (ris.equals("Y")){
                     System.out.println("Email aggiornata con successo");
+                    json.put("email", json.get("new_user"));
+                }else if (ris.equals("N")){
+                    System.out.println("Email occupata da qualcun'altro");
                 }else{
-                    System.out.println(ris); //email di qualcun'altro
+                    System.out.println(ris);
                 }
+            }else if (ris.equals("N")){
+                System.out.println("Password errata");
             }else {
-                System.out.println(ris); //ris = N
+                System.out.println(ris);
             }
         }catch (Exception e){
             System.out.println(ris);
