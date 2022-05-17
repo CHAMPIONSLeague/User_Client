@@ -12,7 +12,7 @@ public class Funzioni {
     JSONParser p = new JSONParser();
     private String ris = "";
     private String msg = "";
-    private final String address = "http://localhost/Server_Cinema/src/user/";
+    private final String address = "http://clowncinema.altervista.org/src/user/";
 
     public String login(){
         try{
@@ -25,7 +25,7 @@ public class Funzioni {
             json.put("password", msg);
 
             //post request mi da {ris: "N"} che receiveParser mi returna come "N"
-            ris = reciveParser(postRequest("http://localhost/Server_Cinema/src/login.php", json.toJSONString()));
+            ris = reciveParser(postRequest("http://clowncinema.altervista.org/src/login.php", json.toJSONString()));
             switch (ris) {
                 case "N" -> {
                     System.out.println("Account inesistente, procedere alla registrazione...");
@@ -61,7 +61,7 @@ public class Funzioni {
             json.put("email", msg);
 
             //post request mi da {ris: "N"} che receiveParser mi returna come "N"
-            ris = reciveParser(postRequest("http://localhost/Server_Cinema/src/registrazione.php", json.toJSONString()));
+            ris = reciveParser(postRequest("http://clowncinema.altervista.org/src/registrazione.php", json.toJSONString()));
             if (ris.equals("N")){
                 System.out.println("Utente non registrato!");
             }else if (ris.equals("Y")){
@@ -147,7 +147,7 @@ public class Funzioni {
     }
 
     public void stmpPalinsesto(){
-        String response = postRequest(address+"stampaPalinsesto.php", "");
+        String response = postRequest("http://clowncinema.altervista.org/src/stampaPalinsesto.php", "");
         response = response.replace("{","").replace("/", "").replace('}','\n').replace('"',' ').replace(","," ");
         System.out.println(response);
     }
