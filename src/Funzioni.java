@@ -39,6 +39,7 @@ public class Funzioni {
                     System.out.println("Ciao " + json.get("username") + ", usa il client dedicato agli admin!");
                     return "admin logged";
                 }
+                default -> System.out.println("Credenziali errate");
             }
         }catch(Exception e){
             System.out.println("Formato credenziali non valido");
@@ -93,30 +94,40 @@ public class Funzioni {
         }
     }
 
-    //TODO: da testare
     public void changeUser(){
         try {
-            System.out.println("Inserire a password dell'account");
+            System.out.println("Inserire la password dell'account");
             msg = tastiera.readLine();
             //username già caricato
             json.put("password", msg);
             json.put("cmd", "checkPass");
 
             ris = reciveParser(postRequest(address+"change_username.php",json.toJSONString()));
-            if (ris.equals("Y")){
+
+            if (ris.equals("Y")){ //credenziali corrette
+                // permette al server di fare il cambio username
+                json.put("cmd", "ch_user");
+
                 System.out.println("Inserire il nuovo Username");
                 msg = tastiera.readLine();
+                json.put("new_user", msg);
 
                 ris = reciveParser(postRequest(address+"change_username.php",json.toJSONString()));
                 if (ris.equals("Y")){
                     System.out.println("Username aggiornato");
-                }else{
+                    json.put("username", json.get("new_user"));
+                }else if (ris.equals("N")){
                     System.out.println("Errore nel cambio di username");
+                }else{
+                    System.out.println(ris);
                 }
-            }else{
+            }else if (ris.equals("N")){
                 System.out.println("Password errata");
+            }else {
+                System.out.println(ris);
             }
         }catch (Exception e){
+            e.printStackTrace();
             System.out.println("Errore nel cambio di username");
         }
     }
@@ -155,7 +166,7 @@ public class Funzioni {
     //TODO: Finire il lato server
     public void annullamentoPrenotazione(){
         JSONObject json_receive;
-        String ris2 = postRequest(address+"eliminazionePrenotazione.php", json.toJSONString());
+        String ris2 = postRequest(address+"delete_prenotazione.php", json.toJSONString());
         ris = reciveParser(ris2);
 
         if(ris.equals("N")){
