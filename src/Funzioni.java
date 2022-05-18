@@ -202,23 +202,27 @@ public class Funzioni {
         }
     }
 
-    //TODO: Finire il lato server
+    //TODO: Returna YU + problema di conversione + LATO SERVER
     public void annullamentoPrenotazione(){
         // fa la stampa delle prenotazioni tramite il nome dell'utente
         // poi bisogna chiedere il codice di quella che si vuole eliminare
         JSONObject json_receive;
         String response = postRequest("http://clowncinema.altervista.org/src/stampa_prenotazioni.php", json.toJSONString());
         ris = reciveParser(response);
+
         try {
             if (ris.equals("Y")){
                 //stampa le prenotazioni
                 json_receive = (JSONObject) p.parse(response);
                 System.out.println("Cod. Prenotazione: "+(String) json_receive.get("id"));
-                System.out.println("Nome: "+(String) json_receive.get("nome_film"));
                 System.out.println("Durata: "+(String) json_receive.get("durata"));
                 System.out.println("Descrizione: "+(String) json_receive.get("descrizione"));
+
+                System.out.println();
             }else if(ris.equals("N")){
                 //roba
+            }else {
+                System.out.println(ris);
             }
         }catch (Exception e){
             e.printStackTrace();
