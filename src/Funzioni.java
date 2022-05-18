@@ -182,11 +182,16 @@ public class Funzioni {
             json.put("nome_film", msg);
 
             String response = postRequest("http://clowncinema.altervista.org/src/stampa_film.php", json.toJSONString());
-            json_receive = (JSONObject) p.parse(response);
-            System.out.println("ID: "+(String) json_receive.get("codice_film"));
-            System.out.println("Nome: "+(String) json_receive.get("nome_film"));
-            System.out.println("Durata: "+(String) json_receive.get("durata"));
-            System.out.println("Descrizione: "+(String) json_receive.get("descrizione"));
+            ris = reciveParser(response);
+            if (ris.equals("Y")){
+                json_receive = (JSONObject) p.parse(response);
+                System.out.println("ID: "+(String) json_receive.get("codice_film"));
+                System.out.println("Nome: "+(String) json_receive.get("nome_film"));
+                System.out.println("Durata: "+(String) json_receive.get("durata"));
+                System.out.println("Descrizione: "+(String) json_receive.get("descrizione"));
+            }else{
+                System.out.println(ris);
+            }
         }catch (Exception e){
             e.printStackTrace();
         }
