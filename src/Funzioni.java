@@ -132,7 +132,6 @@ public class Funzioni {
         }
     }
 
-    //TODO: da testare
     public void changeEmail(){
         try{
             System.out.println("Inserire la password");
@@ -173,6 +172,24 @@ public class Funzioni {
         String response = postRequest("http://clowncinema.altervista.org/src/stampaPalinsesto.php", "");
         response = response.replace("{","").replace("/", "").replace('}','\n').replace('"',' ').replace(","," ");
         System.out.println(response);
+    }
+
+    public void ricercaFilm(){
+        JSONObject json_receive;
+        try{
+            System.out.println("Inserire il nome del film");
+            msg = tastiera.readLine();
+            json.put("nome_film", msg);
+
+            String response = postRequest("http://clowncinema.altervista.org/src/stampa_film.php", json.toJSONString());
+            json_receive = (JSONObject) p.parse(response);
+            System.out.println("ID: "+(String) json_receive.get("codice_film"));
+            System.out.println("Nome: "+(String) json_receive.get("nome_film"));
+            System.out.println("Durata: "+(String) json_receive.get("durata"));
+            System.out.println("Descrizione: "+(String) json_receive.get("descrizione"));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     //TODO: Finire il lato server
