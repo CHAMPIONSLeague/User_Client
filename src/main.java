@@ -56,7 +56,7 @@ public class main {
                     default -> System.out.println("Comando non valido");
                 }
             }catch (Exception e){
-                e.printStackTrace();
+                System.out.println("Comando non valido");
             }
         }
     }

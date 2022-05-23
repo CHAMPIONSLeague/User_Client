@@ -179,6 +179,7 @@ public class Funzioni {
         System.out.println(response);
     }
 
+    //todo: 23/05 funziona
     public void ricercaFilm(){
         JSONObject json_receive;
         try{
@@ -187,19 +188,25 @@ public class Funzioni {
             json.put("nome_film", msg);
 
             String response = postRequest("http://clowncinema.altervista.org/src/stampa_film.php", json.toJSONString());
+            json_receive = (JSONObject) p.parse(response);
             ris = reciveParser(response);
             if (ris.equals("Y")){
-                json_receive = (JSONObject) p.parse(response);
                 System.out.println("ID: "+(String) json_receive.get("codice_film"));
                 System.out.println("Nome: "+(String) json_receive.get("nome_film"));
                 System.out.println("Durata: "+(String) json_receive.get("durata"));
                 System.out.println("Descrizione: "+(String) json_receive.get("descrizione"));
+                System.out.print("\n");
             }else{
                 System.out.println(ris);
             }
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    //todo: stampa posti disponibili nelle sale
+    public void postiDispSale(){
+
     }
 
     //TODO: Returna YU + problema di conversione + LATO SERVER
