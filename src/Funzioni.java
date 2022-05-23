@@ -177,6 +177,7 @@ public class Funzioni {
         String response = postRequest("http://clowncinema.altervista.org/src/stampaPalinsesto.php", "");
         response = response.replace("{","").replace("/", "").replace('}','\n').replace('"',' ').replace(","," ");
         System.out.println(response);
+        postiDisp();
     }
 
     //todo: 23/05 funziona
@@ -204,39 +205,63 @@ public class Funzioni {
         }
     }
 
-    //todo: stampa posti disponibili nelle sale
-    public void postiDispSale(){
-
+    //todo: 23/05 funziona
+    public void postiDisp(){
+        JSONObject json_receive;
+        try {
+            String response = postRequest("http://clowncinema.altervista.org/src/stampa_posti_liberi_spettacolo.php", "");
+            ris = reciveParser(response);
+            if (ris.equals("Y")){
+                json_receive = (JSONObject) p.parse(response);
+                System.out.println("Spettacolo: "+json_receive.get("id")+" | Posti liberi: "+json_receive.get("posti_liberi")+"\n");
+            }else{
+                System.out.println(ris);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
-    //TODO: Returna YU + problema di conversione + LATO SERVER
+    //todo: 23/05 funziona
+    public void stmpPrenotazioni(){
+        String response = postRequest(address+"stampa_prenotazioni.php", json.toJSONString());
+        response = response.replace("{","").replace("/", "").replace('}','\n').replace('"',' ').replace(","," ");
+        System.out.println(response);
+    }
+
+    //todo: 23/05 funziona
     public void annullamentoPrenotazione(){
         // fa la stampa delle prenotazioni tramite il nome dell'utente
         // poi bisogna chiedere il codice di quella che si vuole eliminare
-        JSONObject json_receive;
-        String response = postRequest("http://clowncinema.altervista.org/src/stampa_prenotazioni.php", json.toJSONString());
-        ris = reciveParser(response);
-
+        stmpPrenotazioni();
         try {
-            if (ris.equals("Y")){
-                //stampa le prenotazioni
-                json_receive = (JSONObject) p.parse(response);
-                System.out.println("Cod. Prenotazione: "+(String) json_receive.get("id"));
-                System.out.println("Durata: "+(String) json_receive.get("durata"));
-                System.out.println("Descrizione: "+(String) json_receive.get("descrizione"));
+            System.out.println("Inserire il codice dello spettacolo relativo alla prenotazione da eliminare: ");
+            msg = tastiera.readLine();
+            json.put("cod_sp", msg);
+            json.put("cmd", "ch_pr");
 
-                System.out.println();
-            }else if(ris.equals("N")){
-                //roba
-            }else {
+            ris = reciveParser(postRequest(address+"delete_prenotazione.php", json.toJSONString()));
+
+            if (ris.equals("Y")){
+                json.put("cmd", "del_pr");
+                System.out.println("del_pr");
+                ris = reciveParser(postRequest(address+"delete_prenotazione.php", json.toJSONString()));
+
+                if (ris.equals("Y")){
+                    System.out.println("Prenotazione eliminata!");
+                }else if (ris.equals("N")){
+                    System.out.println("Errore nell'eliminazione della prenotazione");
+                }else{
+                    System.out.println(ris);
+                }
+            }else if (ris.equals("N")){
+                System.out.println("Non ci sono prenotazioni esistenti");
+            }else{
                 System.out.println(ris);
             }
         }catch (Exception e){
             e.printStackTrace();
         }
-
-        ris = reciveParser(postRequest(address+"delete_prenotazione.php", json.toJSONString()));
-
     }
 
     public static String postRequest(String indirizzo, String messaggio){
