@@ -5,6 +5,7 @@ import org.json.simple.parser.ParseException;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.spec.ECField;
 
 public class Funzioni {
     public BufferedReader tastiera = new BufferedReader(new InputStreamReader(System.in));
@@ -12,7 +13,9 @@ public class Funzioni {
     JSONParser p = new JSONParser();
     private String ris = "";
     private String msg = "";
-    private final String address = "http://clowncinema.altervista.org/src/user/";
+    private final String address_user = "http://clowncinema.altervista.org/src/user/";
+    private final String address = "http://clowncinema.altervista.org/src/";
+
 
     //todo: 18/05 funziona
     public String login(){
@@ -26,7 +29,7 @@ public class Funzioni {
             json.put("password", msg);
 
             //post request mi da {ris: "N"} che receiveParser mi returna come "N"
-            ris = reciveParser(postRequest("http://clowncinema.altervista.org/src/login.php", json.toJSONString()));
+            ris = reciveParser(postRequest(address +"login.php", json.toJSONString()));
             switch (ris) {
                 case "N" -> {
                     System.out.println("Account inesistente, procedere alla registrazione...");
@@ -64,7 +67,7 @@ public class Funzioni {
             json.put("email", msg);
 
             //post request mi da {ris: "N"} che receiveParser mi returna come "N"
-            ris = reciveParser(postRequest("http://clowncinema.altervista.org/src/registrazione.php", json.toJSONString()));
+            ris = reciveParser(postRequest(address + "registrazione.php", json.toJSONString()));
             if (ris.equals("N")){
                 System.out.println("Utente non registrato!");
             }else if (ris.equals("Y")){
@@ -83,7 +86,7 @@ public class Funzioni {
             System.out.println("Inserire il codice dello spettacolo:");
             msg = tastiera.readLine();
             json.put("cod_sp", msg);
-            ris = reciveParser(postRequest(address+"prenotazione.php", json.toJSONString()));
+            ris = reciveParser(postRequest(address_user +"prenotazione.php", json.toJSONString()));
 
             if(ris.equals("Y")){
                 System.out.println("Prenotazione aggiunta");
@@ -106,7 +109,7 @@ public class Funzioni {
             json.put("password", msg);
             json.put("cmd", "checkPass");
 
-            ris = reciveParser(postRequest(address+"change_username.php",json.toJSONString()));
+            ris = reciveParser(postRequest(address_user +"change_username.php",json.toJSONString()));
 
             if (ris.equals("Y")){ //credenziali corrette
                 // permette al server di fare il cambio username
@@ -116,7 +119,7 @@ public class Funzioni {
                 msg = tastiera.readLine();
                 json.put("new_user", msg);
 
-                ris = reciveParser(postRequest(address+"change_username.php",json.toJSONString()));
+                ris = reciveParser(postRequest(address_user +"change_username.php",json.toJSONString()));
                 if (ris.equals("Y")){
                     System.out.println("Username aggiornato");
                     json.put("username", json.get("new_user"));
@@ -143,7 +146,7 @@ public class Funzioni {
             json.put("password", msg);
             json.put("cmd", "checkPass");
 
-            ris = reciveParser(postRequest(address+"change_email.php", json.toJSONString()));
+            ris = reciveParser(postRequest(address_user +"change_email.php", json.toJSONString()));
 
             if (ris.equals("Y")){ //credenziali corrette
                 json.put("cmd", "ch_email");
@@ -152,7 +155,7 @@ public class Funzioni {
                 msg = tastiera.readLine();
                 json.put("new_email", msg);
 
-                ris = reciveParser(postRequest(address+"change_email.php", json.toJSONString()));
+                ris = reciveParser(postRequest(address_user +"change_email.php", json.toJSONString()));
                 if (ris.equals("Y")){
                     System.out.println("Email aggiornata con successo");
                     json.put("email", json.get("new_user"));
@@ -174,7 +177,7 @@ public class Funzioni {
 
     //todo: 18/05 funziona
     public void stmpPalinsesto(){
-        String response = postRequest("http://clowncinema.altervista.org/src/stampaPalinsesto.php", "");
+        String response = postRequest(address + "stampaPalinsesto.php", "");
         response = response.replace("{","").replace("/", "").replace('}','\n').replace('"',' ').replace(","," ");
         System.out.println(response);
         postiDisp();
@@ -188,7 +191,7 @@ public class Funzioni {
             msg = tastiera.readLine();
             json.put("nome_film", msg);
 
-            String response = postRequest("http://clowncinema.altervista.org/src/stampa_film.php", json.toJSONString());
+            String response = postRequest(address + "stampa_film.php", json.toJSONString());
             json_receive = (JSONObject) p.parse(response);
             ris = reciveParser(response);
             if (ris.equals("Y")){
@@ -209,7 +212,7 @@ public class Funzioni {
     public void postiDisp(){
         JSONObject json_receive;
         try {
-            String response = postRequest("http://clowncinema.altervista.org/src/stampa_posti_liberi_spettacolo.php", "");
+            String response = postRequest(address + "stampa_posti_liberi_spettacolo.php", "");
             ris = reciveParser(response);
             if (ris.equals("Y")){
                 json_receive = (JSONObject) p.parse(response);
@@ -224,7 +227,7 @@ public class Funzioni {
 
     //todo: 23/05 funziona
     public void stmpPrenotazioni(){
-        String response = postRequest(address+"stampa_prenotazioni.php", json.toJSONString());
+        String response = postRequest(address_user +"stampa_prenotazioni.php", json.toJSONString());
         response = response.replace("{","").replace("/", "").replace('}','\n').replace('"',' ').replace(","," ");
         System.out.println(response);
     }
@@ -240,12 +243,12 @@ public class Funzioni {
             json.put("cod_sp", msg);
             json.put("cmd", "ch_pr");
 
-            ris = reciveParser(postRequest(address+"delete_prenotazione.php", json.toJSONString()));
+            ris = reciveParser(postRequest(address_user +"delete_prenotazione.php", json.toJSONString()));
 
             if (ris.equals("Y")){
                 json.put("cmd", "del_pr");
                 System.out.println("del_pr");
-                ris = reciveParser(postRequest(address+"delete_prenotazione.php", json.toJSONString()));
+                ris = reciveParser(postRequest(address_user +"delete_prenotazione.php", json.toJSONString()));
 
                 if (ris.equals("Y")){
                     System.out.println("Prenotazione eliminata!");
@@ -261,6 +264,67 @@ public class Funzioni {
             }
         }catch (Exception e){
             e.printStackTrace();
+        }
+    }
+
+    //todo: 24/05 funziona
+    public void changePassword(){
+        json.put("cmd","ch_token");
+        try{
+            System.out.println("Inserire il proprio username: ");
+            msg = tastiera.readLine();
+            json.put("username",msg);
+
+            System.out.println("Inserire il token ricevuto via email");
+            msg = tastiera.readLine();
+            json.put("token",msg);
+
+            ris = reciveParser(postRequest(address +"mod_password.php", json.toJSONString()));
+
+            if(ris.equals("Y")){
+                json.put("cmd","ch_pass");
+                System.out.println("Inserire la nuova password: ");
+                msg = tastiera.readLine();
+                json.put("new_pass", msg);
+
+                ris = reciveParser(postRequest(address +"mod_password.php", json.toJSONString()));
+                if(ris.equals("Y")){
+                    System.out.println("Aggiornamento password effettuato!");
+                }else if(ris.equals("N")){
+                    System.out.println("Errore aggiornamento password!");
+                }
+            }else if(ris.equals("N")){
+                System.out.println("Credenziali errate!");
+            }else{
+                System.out.println(ris);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    //todo: 24/05 funziona
+    public void recuperaPasword(){
+        try {
+            String username = "", email = "";
+            //menu dati richiesti per la modifica della password
+            System.out.println("Per recuperare la tua password inserisci:" +
+                               "\nUsername > ");
+            username = tastiera.readLine();
+            //inserimento username nel json
+            json.put("username", username);
+            System.out.println("\nEmail > ");
+            email = tastiera.readLine();
+            //inserimento email nel json
+            json.put("email", email);
+            ris = reciveParser(postRequest(address + "change_password.php", json.toJSONString()));
+            if (ris.equals("Y")) {
+                System.out.println("Email inviata!");
+            } else if (ris.equals("N")) {
+                System.out.println("Utente inesistente!");
+            }
+        }catch (IOException e){
+            System.out.println(e);
         }
     }
 

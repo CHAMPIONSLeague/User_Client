@@ -15,6 +15,7 @@ public class main {
             try{
                 System.out.println("1. Login");
                 System.out.println("2. Registrazione");
+                System.out.println("3. Password dimenticata?");
                 System.out.println("0. Exit");
                 scelta = Integer.parseInt(tastiera.readLine());
 
@@ -53,8 +54,17 @@ public class main {
                             return;
                         }
                     }
-                    case 2 -> //REGISTRAZIONE
-                            funzione.registrazione();
+                    case 2 -> funzione.registrazione();
+                    case 3 -> {
+                        System.out.println("\nGestione/Recupero password" +
+                                "\n1.Modifica password" +
+                                "\n2.Richiedi la modifica della password");
+                        int func_pass = Integer.parseInt(tastiera.readLine());
+                        switch (func_pass){
+                            case 1 -> funzione.changePassword();
+                            case 2 -> funzione.recuperaPasword();
+                        }
+                    }
                     default -> System.out.println("Comando non valido");
                 }
             }catch (Exception e){
