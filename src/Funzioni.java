@@ -328,6 +328,32 @@ public class Funzioni {
         }
     }
 
+    //todo: 25/05 funziona
+    public void deleteAccount(){
+        try{
+            System.out.println("Vuoi veramente eliminare l'account?");
+            System.out.println("Scelta> Y/N");
+            msg = tastiera.readLine();
+
+            if (msg.equals("Y")){
+                System.out.println("Inserire l'email dell'account: ");
+                msg = tastiera.readLine();
+                json.put("email", msg);
+                ris = reciveParser(postRequest(address+"delete_account.php", json.toJSONString()));
+
+                if(ris.equals("Y")){
+                    System.out.println("Email inviata!");
+                }else if(ris.equals("N")){
+                    System.out.println("Errore invio email!");
+                }
+            }else{
+                System.out.println("Procedura annullata...");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     public static String postRequest(String indirizzo, String messaggio){
         String response = "";
 

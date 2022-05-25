@@ -27,7 +27,6 @@ public class main {
 
                             //TODO: Menu utente
                             while (m_user != 0) {
-
                                 System.out.println("1. Stampa Palinsesto");
                                 System.out.println("2. Cerca un film");
                                 System.out.println("3. Nuova prenotazione");
@@ -35,6 +34,7 @@ public class main {
                                 System.out.println("5. Stampa prenotazioni");
                                 System.out.println("6. Cambio username");
                                 System.out.println("7. Cambio email");
+                                System.out.println("8. Eliminazione Account");
                                 System.out.println("0. Exit");
 
                                 m_user = Integer.parseInt(tastiera.readLine());
@@ -47,6 +47,10 @@ public class main {
                                     case 5 -> funzione.stmpPrenotazioni();
                                     case 6 -> funzione.changeUser();
                                     case 7 -> funzione.changeEmail();
+                                    case 8 -> {
+                                        funzione.deleteAccount();
+                                        m_user = 0;
+                                    }
                                     default -> System.out.println("Comando non valido");
                                 }
                             }
@@ -56,9 +60,11 @@ public class main {
                     }
                     case 2 -> funzione.registrazione();
                     case 3 -> {
-                        System.out.println("\nGestione/Recupero password" +
-                                "\n1.Modifica password" +
-                                "\n2.Richiedi la modifica della password");
+                        System.out.println("""
+                                Gestione/Recupero password
+                                1.Modifica password
+                                2.Richiedi la modifica della password
+                                """);
                         int func_pass = Integer.parseInt(tastiera.readLine());
                         switch (func_pass){
                             case 1 -> funzione.changePassword();
