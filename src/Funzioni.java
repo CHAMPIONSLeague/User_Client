@@ -109,7 +109,7 @@ public class Funzioni {
             json.put("password", msg);
             json.put("cmd", "checkPass");
 
-            ris = reciveParser(postRequest(address_user +"change_username.php",json.toJSONString()));
+            ris = reciveParser(postRequest(address +"change_username.php",json.toJSONString()));
 
             if (ris.equals("Y")){ //credenziali corrette
                 // permette al server di fare il cambio username
@@ -119,7 +119,7 @@ public class Funzioni {
                 msg = tastiera.readLine();
                 json.put("new_user", msg);
 
-                ris = reciveParser(postRequest(address_user +"change_username.php",json.toJSONString()));
+                ris = reciveParser(postRequest(address +"change_username.php",json.toJSONString()));
                 if (ris.equals("Y")){
                     System.out.println("Username aggiornato");
                     json.put("username", json.get("new_user"));
@@ -146,7 +146,7 @@ public class Funzioni {
             json.put("password", msg);
             json.put("cmd", "checkPass");
 
-            ris = reciveParser(postRequest(address_user +"change_email.php", json.toJSONString()));
+            ris = reciveParser(postRequest(address +"change_email.php", json.toJSONString()));
 
             if (ris.equals("Y")){ //credenziali corrette
                 json.put("cmd", "ch_email");
@@ -155,7 +155,7 @@ public class Funzioni {
                 msg = tastiera.readLine();
                 json.put("new_email", msg);
 
-                ris = reciveParser(postRequest(address_user +"change_email.php", json.toJSONString()));
+                ris = reciveParser(postRequest(address +"change_email.php", json.toJSONString()));
                 if (ris.equals("Y")){
                     System.out.println("Email aggiornata con successo");
                     json.put("email", json.get("new_user"));
